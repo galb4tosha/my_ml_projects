@@ -1,0 +1,36 @@
+schema: '2.0'
+stages:
+  preprocess_data:
+    cmd: python src/data/raw_data_to_npy.py data/raw/train.csv data/raw/test.csv data/processed_data/
+    deps:
+    - path: data/raw/test.csv
+      md5: a35759d77c0a3dadb4d4253ff87ec430
+      size: 51118296
+    - path: data/raw/train.csv
+      md5: 599f520fcc1795dd96e0e79fa755875b
+      size: 76775041
+    - path: src/data/raw_data_to_npy.py
+      md5: 38ddb0038ed88a7750346f94ffc63cea
+      size: 871
+    outs:
+    - path: data/processed_data/
+      md5: 37feeda9cb6e4f5e01326b340ebc13f7.dir
+      size: 439376384
+      nfiles: 3
+  train_model:
+    cmd: python src/train/train.py data/processed_data/x_train.npy data/processed_data/y_train.npy
+      models/mnist.h5
+    deps:
+    - path: data/processed_data/x_train.npy
+      md5: 35e7ee2e423e417a80bcd27469ea1ba5
+      size: 263424128
+    - path: data/processed_data/y_train.npy
+      md5: 5936fdc072480c01b8e52c9df40f441d
+      size: 336128
+    - path: src/train/train.py
+      md5: b38542a6beea9d6f7b02782255832baf
+      size: 1882
+    outs:
+    - path: models/mnist.h5
+      md5: cd877fb047f4db1d6b0d552ff386a213
+      size: 3867288
