@@ -19,7 +19,6 @@ stages:
       nfiles: 3
   train_model:
     cmd: python src/train/train.py data/processed_data/x_train.npy data/processed_data/y_train.npy
-      models/mnist.h5
     deps:
     - path: data/processed_data/x_train.npy
       md5: 35e7ee2e423e417a80bcd27469ea1ba5
@@ -28,9 +27,9 @@ stages:
       md5: 5936fdc072480c01b8e52c9df40f441d
       size: 336128
     - path: src/train/train.py
-      md5: b38542a6beea9d6f7b02782255832baf
-      size: 1882
+      md5: ea1263259dbbc3c5ab0df6cd462ceaa8
+      size: 1990
     outs:
     - path: models/mnist.h5
-      md5: cd877fb047f4db1d6b0d552ff386a213
+      md5: 6bf5cd214365566f2b44c1a13a5ba16f
       size: 3867288

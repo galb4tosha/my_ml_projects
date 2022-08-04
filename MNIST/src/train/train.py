@@ -3,22 +3,15 @@ from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Flatten
 from keras import Model, Input, Sequential
 import numpy as np 
 import os
-import click
+import neptune.new as neptune
+from neptune.new.integrations.tensorflow_keras import NeptuneCallback
 
-from clearml import Task
-
-# @click.command()
-# @click.argument("x_train_path", type=click.Path(exists=True))
-# @click.argument("y_train_path", type=click.Path(exists=True))
-# @click.argument("save_path", type=click.Path())
-def read_data(x_train_path, y_train_path, save_path):
+def read_data(x_train_path, y_train_path):
     x_data = np.load(x_train_path).reshape((42000, 28, 28))
     y_data = np.load(y_train_path)
-    save = save_path
-    return x_data, y_data, save
+    return x_data, y_data
 
 def blocks(in_layer, filters, n_blocks): 
-    
     for _ in range(n_blocks):
         in_layer = Conv2D(filters, (3,3), activation='relu', padding='same', strides=(1,1))(in_layer)   
     in_layer = MaxPooling2D((2,2))(in_layer)
@@ -45,12 +38,17 @@ def get_model():
     print(model.summary())
     return model
 
-def train_and_save_model(x_train, y_train, model, save_path):
-    model.fit(x_train, y_train, batch_size=64, epochs=50)
+def train_and_save_model(x_train, y_train, model):
+    save_path = "models/mnist.h5"
+    run = neptune.init(
+        project="galb4tosha/test-project",
+        api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vYXBwLm5lcHR1bmUuYWkiLCJhcGlfdXJsIjoiaHR0cHM6Ly9hcHAubmVwdHVuZS5haSIsImFwaV9rZXkiOiJkN2UwNjk5ZS1jZjBiLTQ3OTUtODhkOC0yYjJmNjY4ZDM5NTYifQ==",
+    )  # your credentials
+    neptune_cbk = NeptuneCallback(run=run, base_namespace="training")
+    model.fit(x_train, y_train, batch_size=128, epochs=50, callbacks=[neptune_cbk],)
     model.save(save_path)
 
 if __name__ == "__main__":
-    task = Task.init(project_name="My Project", task_name="My Experiment")
-    x_train, y_train, save_path = read_data("data/processed_data/x_train.npy", "data/processed_data/y_train.npy", "models/mnist.h5")
+    x_train, y_train = read_data("data/processed_data/x_train.npy", "data/processed_data/y_train.npy")
     model = get_model()
-    train_and_save_model(x_train, y_train, model, save_path)
+    train_and_save_model(x_train, y_train, model)

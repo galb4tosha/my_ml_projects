@@ -10,7 +10,7 @@ stages:
       - data/processed_data/
     
   train_model:
-    cmd: python src/train/train.py data/processed_data/x_train.npy data/processed_data/y_train.npy models/mnist.h5
+    cmd: python src/train/train.py data/processed_data/x_train.npy data/processed_data/y_train.npy
     deps:
       - data/processed_data/x_train.npy
       - data/processed_data/y_train.npy
