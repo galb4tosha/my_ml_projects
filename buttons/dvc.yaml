@@ -1,0 +1,29 @@
+stages:
+
+  preprocess_data: 
+    cmd: python scripts/preprocess/preprocess.py
+    deps:
+      - data/raw/crop_data_labeled
+      - scripts/preprocess/preprocess.py
+    outs:
+      - data/processed_data/x_train.npy
+      - data/processed_data/y_train.npy
+      - data/processed_data/x_test.npy
+      - data/processed_data/y_test.npy
+    
+  train_model:
+    cmd: python scripts/train/train.py
+    deps:
+      - data/processed_data/x_train.npy
+      - data/processed_data/y_train.npy
+      - scripts/train/train.py
+    outs:
+      - models/best_model.h5
+  
+  validate_model:
+    cmd: python scripts/validate/validate_model.py
+    deps:
+      - data/processed_data/x_test.npy
+      - data/processed_data/y_test.npy
+      - models/best_model.h5
+      - scripts/validate/validate_model.py
