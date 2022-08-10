@@ -1,0 +1,56 @@
+schema: '2.0'
+stages:
+  preprocess_data:
+    cmd: python scripts/preprocess/preprocess.py
+    deps:
+    - path: data/raw/crop_data_labeled
+      md5: af91e93d0f04ad90a3de7ed0316e587e.dir
+      size: 19011810
+      nfiles: 1367
+    - path: scripts/preprocess/preprocess.py
+      md5: bdccff36b8a9b6366307948d791771b9
+      size: 1375
+    outs:
+    - path: data/processed_data/x_test.npy
+      md5: 46a7b566c5c5caca1530892228139d32
+      size: 3170432
+    - path: data/processed_data/x_train.npy
+      md5: f14e7629a932657e5e05235f3e9a1966
+      size: 30253184
+    - path: data/processed_data/y_test.npy
+      md5: f09e508d61b5008712817fb34e934046
+      size: 1160
+    - path: data/processed_data/y_train.npy
+      md5: b91bfbbb0652faf548302077d5ba4ac4
+      size: 9976
+  train_model:
+    cmd: python scripts/train/train.py
+    deps:
+    - path: data/processed_data/x_train.npy
+      md5: f14e7629a932657e5e05235f3e9a1966
+      size: 30253184
+    - path: data/processed_data/y_train.npy
+      md5: b91bfbbb0652faf548302077d5ba4ac4
+      size: 9976
+    - path: scripts/train/train.py
+      md5: 2da9a1ad4d773202b6ff33e7832a5ec5
+      size: 1895
+    outs:
+    - path: models/best_model.h5
+      md5: 715b8e50d93f93527d1cb37de1365324
+      size: 137384
+  validate_model:
+    cmd: python scripts/validate/validate_model.py
+    deps:
+    - path: data/processed_data/x_test.npy
+      md5: 46a7b566c5c5caca1530892228139d32
+      size: 3170432
+    - path: data/processed_data/y_test.npy
+      md5: f09e508d61b5008712817fb34e934046
+      size: 1160
+    - path: models/best_model.h5
+      md5: 715b8e50d93f93527d1cb37de1365324
+      size: 137384
+    - path: scripts/validate/validate_model.py
+      md5: 6cdc2908b399a93ae60ce95fb05409bd
+      size: 608
